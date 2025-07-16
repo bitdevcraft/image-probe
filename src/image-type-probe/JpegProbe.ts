@@ -1,4 +1,4 @@
-import { Probe, ProbeInput } from "../abstract/Probe";
+import { Probe } from "../abstract/Probe";
 import { ProbeSizeResults } from "../types/ProbeSizeResults";
 import { Signature } from "../lib/Signature";
 

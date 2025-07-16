@@ -3,22 +3,27 @@
     "version": "0.2.0",
     "description": "Get image type and size from the first bytes, without needing to read or download it in full ... And without any NPM additional dependencies!",
     "source": "src/index.ts",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "exports": {
+        "require": "./dist/index.cjs",
+        "default": "./dist/index.modern.js"
+    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.esm.js",
     "unpkg": "./dist/index.umd.js",
+    "types": "dist/index.d.ts",
     "type": "module",
     "files": [
         "/dist"
     ],
     "scripts": {
-        "lint": "eslint --ext .ts \"./source/**\"",
+        "lint": "eslint .",
         "test": "jest --passWithNoTests",
         "clean": "rimraf dist",
-        "build": "pnpm clean && microbundle",
-        "prebuild": "npm run clean",
-        "release:patch": "npm version patch && git push --follow-tags",
-        "release:minor": "npm version minor && git push --follow-tags",
-        "release:major": "npm version major && git push --follow-tags"
+        "build": "pnpm lint && pnpm clean && microbundle",
+        "prebuild": "pnpm clean",
+        "release:patch": "pnpm version patch && git push --follow-tags",
+        "release:minor": "pnpm version minor && git push --follow-tags",
+        "release:major": "pnpm version major && git push --follow-tags"
     },
     "repository": {
         "type": "git",
@@ -66,6 +71,7 @@
         }
     },
     "devDependencies": {
+        "@eslint/js": "^9.31.0",
         "@rollup/plugin-commonjs": "^28.0.6",
         "@rollup/plugin-node-resolve": "^16.0.1",
         "@rollup/plugin-typescript": "^12.1.4",
@@ -75,7 +81,10 @@
         "@typescript-eslint/parser": "^8.37.0",
         "eslint": "^9.31.0",
         "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^10.1.5",
         "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-only-warn": "^1.1.0",
+        "eslint-plugin-unused-imports": "^4.1.4",
         "jest": "^30.0.4",
         "microbundle": "^0.15.1",
         "rimraf": "^6.0.1",
@@ -83,6 +92,7 @@
         "ts-jest": "^29.4.0",
         "ts-node": "^10.9.2",
         "tsup": "^8.5.0",
-        "typescript": "^5.8.3"
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.37.0"
     }
 }
