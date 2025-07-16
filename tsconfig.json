@@ -2,9 +2,7 @@
     "compileOnSave": false,
     "compilerOptions": {
         "target": "es2018",
-        "lib": [
-            "es2018"
-        ],
+        "lib": ["es2018"],
         "outDir": "dist",
         "module": "commonjs",
         "sourceMap": true,
@@ -15,12 +13,7 @@
         "moduleResolution": "node",
         "strictNullChecks": true,
         "strictFunctionTypes": true,
-        "typeRoots": [
-            "./node_modules/@types",
-            "./source/@types"
-        ]
+        "typeRoots": ["./node_modules/@types", "./src/@types"]
     },
-    "include": [
-        "source/**/*.ts"
-    ]
+    "include": ["src/**/*"]
 }

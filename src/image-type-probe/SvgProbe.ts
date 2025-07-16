@@ -1,6 +1,5 @@
-import { Probe } from "./Probe";
-import { ProbeSizeResults } from "./ProbeSizeResults";
-
+import { Probe } from "../abstract/Probe";
+import { ProbeSizeResults } from "../types/ProbeSizeResults";
 
 interface SvgAttributes {
     width: number | null;
@@ -14,7 +13,7 @@ const extractorRegExps = {
     height: /\sheight=(['"])([^%]+?)\1/,
     root: svgReg,
     viewbox: /\sviewBox=(['"])(.+?)\1/,
-    width: /\swidth=(['"])([^%]+?)\1/
+    width: /\swidth=(['"])([^%]+?)\1/,
 };
 
 const INCH_CM = 2.54;
@@ -25,7 +24,7 @@ const units: { [unit: string]: number } = {
     m: (96 / INCH_CM) * 100,
     mm: 96 / INCH_CM / 10,
     pc: 96 / 72 / 12,
-    pt: 96 / 72
+    pt: 96 / 72,
 };
 
 function parseLength(len: string): number | undefined {
@@ -40,7 +39,7 @@ function parseViewbox(viewbox: string): SvgAttributes {
     const bounds = viewbox.split(" ");
     return {
         height: parseLength(bounds[3]) as number,
-        width: parseLength(bounds[2]) as number
+        width: parseLength(bounds[2]) as number,
     };
 }
 
@@ -49,42 +48,43 @@ function parseAttributes(root: string): SvgAttributes {
     const height = root.match(extractorRegExps.height);
     const viewbox = root.match(extractorRegExps.viewbox);
     return {
-        height: height && parseLength(height[2]) as number,
-        viewbox: viewbox && parseViewbox(viewbox[2]) as SvgAttributes,
-        width: width && parseLength(width[2]) as number
+        height: height && (parseLength(height[2]) as number),
+        viewbox: viewbox && (parseViewbox(viewbox[2]) as SvgAttributes),
+        width: width && (parseLength(width[2]) as number),
     };
 }
 
 function calculateByDimensions(attrs: SvgAttributes): ProbeSizeResults {
     return {
         height: attrs.height as number,
-        width: attrs.width as number
+        width: attrs.width as number,
     };
 }
 
-function calculateByViewbox(attrs: SvgAttributes, viewbox: SvgAttributes): ProbeSizeResults {
+function calculateByViewbox(
+    attrs: SvgAttributes,
+    viewbox: SvgAttributes
+): ProbeSizeResults {
     const ratio = (viewbox.width as number) / (viewbox.height as number);
     if (attrs.width) {
         return {
             height: Math.floor(attrs.width / ratio),
-            width: attrs.width as number
+            width: attrs.width as number,
         };
     }
     if (attrs.height) {
         return {
             height: attrs.height,
-            width: Math.floor(attrs.height * ratio)
+            width: Math.floor(attrs.height * ratio),
         };
     }
     return {
         height: viewbox.height as number,
-        width: viewbox.width as number
+        width: viewbox.width as number,
     };
 }
 
-
 export class SvgProbe extends Probe {
-
     public get type(): string {
         return "svg";
     }
@@ -93,14 +93,14 @@ export class SvgProbe extends Probe {
         return "image/svg";
     }
 
-    public probeType(buffer: Buffer): boolean {
+    public probeType(buffer: Uint8Array): boolean {
         const str = String(buffer);
         return svgReg.test(str);
     }
 
     /* eslint complexity: "off" */
-    public probeSize(buffer: Buffer): ProbeSizeResults | undefined {
-        const root = buffer.toString("utf8").match(extractorRegExps.root);
+    public probeSize(buffer: Uint8Array): ProbeSizeResults | undefined {
+        const root = buffer.toString().match(extractorRegExps.root);
         if (root) {
             const attrs = parseAttributes(root[0]);
             if (attrs.width && attrs.height) {
@@ -113,5 +113,4 @@ export class SvgProbe extends Probe {
 
         return undefined;
     }
-
 }
