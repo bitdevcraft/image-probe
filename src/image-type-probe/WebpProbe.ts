@@ -66,11 +66,12 @@ export class WebpProbe extends Probe {
             ): number => {
                 let val = 0;
                 for (let i = 0; i < byteLength; i++) {
-                    val |= this[offset + i] << (8 * i);
+                    val |= buffer[offset + i] << (8 * i);
                 }
                 // mask off any overflow beyond byteLength
                 return val >>> 0;
             };
+            
 
             return {
                 width: readUIntLE(buffer, 16 + 8, 3) + 1,
