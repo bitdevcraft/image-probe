@@ -56,7 +56,7 @@
         ],
         "testEnvironment": "node",
         "collectCoverageFrom": [
-            "source/**"
+            "src/**"
         ],
         "watchPathIgnorePatterns": [
             "<rootDir>/node_modules/"
